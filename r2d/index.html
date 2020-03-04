@@ -4,9 +4,10 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Raw to Dict</title>
+	<link rel="icon" href="./favicon.ico" type="image/x-icon">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" media="screen" href="main.css" />
 	<script src="./js/jquery-1.11.1.min.js"></script>
+	<script src="./js/clipboard.min.js"></script>
 	<style>
 		body{
 			margin: 15 auto;
@@ -15,42 +16,127 @@
 		#dict{
 			margin-top: 10px; 
 		}
+		#t1, #t2{
+		  border-radius: 8px; 
+		  border:1px solid #c8cccf;
+		  color: #6a6f77;
+		  width: 60%;
+		  font-size: 14px;
+		  font-family: sans-serif, Georgia, 'New York';
+		}
+/*		#button, .btn{
+		    border-radius: 10px; 
+			background-color: #4CAF50; 
+		    border: none;
+		    color: white;
+		    padding: 10px 20px;
+		    text-align: center;
+		    text-decoration: none;
+		    display: inline-block;
+		    font-size: 14px;
+		    margin: auto 40px; 
+		}*/
+		#button, .btn{
+			outline:none;
+		    position: relative;
+		    background-color: #4CAF50;
+		    border: none;
+		    border-radius: 10px; 
+			background-color: #4CAF50; 
+		    border: none;
+		    color: white;
+		    padding: 10px 20px;
+		    text-align: center;
+		    text-decoration: none;
+		    display: inline-block;
+		    font-size: 14px;
+		    margin: auto 40px; 
+		    -webkit-transition-duration: 0.4s; /* Safari */
+		    transition-duration: 0.4s;
+		    text-decoration: none;
+		    overflow: hidden;
+		    cursor: pointer;
+		}
+		#button:after, .btn:after{
+		    content: "";
+		    background: #90EE90;
+		    display: block;
+		    position: absolute;
+		    padding-top: 300%;
+		    padding-left: 350%;
+		    margin-left: -20px!important;
+		    margin-top: -120%;
+		    opacity: 0;
+		    transition: all 0.8s
+		}
+		#button:active:after, .btn:active:after {
+		    padding: 0;
+		    margin: 0;
+		    opacity: 1;
+		    transition: 0s
+		}
 	</style>
+	<script>
+		//自定义弹框
+		function Toast(msg,duration){
+			duration=isNaN(duration)?3000:duration;
+			var m = document.createElement('div');
+			m.innerHTML = msg;
+			m.style.cssText="width: 60%;min-width: 150px;opacity: 0.7;height: 40px;color: rgb(255, 255, 255);line-height: 40px;text-align: center;border-radius: 5px;position: fixed;top: 60%;left: 20%;z-index: 999999;background: rgb(0, 0, 0);font-size: 13px;";
+			document.body.appendChild(m);
+			setTimeout(function() {
+				var d = 0.5;
+				m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
+				m.style.opacity = '0';
+				setTimeout(function() { document.body.removeChild(m) }, d * 1000);
+			}, duration);
+		}
+	</script> 
 	<script>
 		$(function () {
 			$('#button').click(function () {
 				var raw = $(t1).val();
 				if(raw == ''){
-					alert('待转换内容为空，请输入后再次点击。');
+					Toast('待转换内容为空，请输入后再次点击。', 2000);
 				}else{
 					// 实现转换逻辑
 					// alert(raw)
 					tmp = raw.split('\n');
-					var total_line = '',
+					var total_line = '{\n',
 						line = '';
 					for (let index = 0; index < tmp.length; index++) {
+						d = index===tmp.length-1?'':','
 						tmp_line = tmp[index].split(':');
-						line = '\'' + tmp_line[0] + '\': ' + '\'' + tmp_line[1].trim() + '\',\n';
+						line = '    \"' + tmp_line[0] + '\": ' + '\"' + tmp_line.slice(1,).join(':').trim() + '\"'+ d +'\n';
 						total_line = total_line + line;
 					}
+					total_line += "}"
 					// alert(total_line);
 					$('#t2').val(total_line);
-					
-					
 				};
-			})
+			});
+
+		var clipboard = new ClipboardJS('.btn');
+		clipboard.on('success', function(e) {
+			Toast("已成功复制剪贴板！",2000);
+		});
+		clipboard.on('error', function(e) {
+			Toast("复制失败，请手动选择进行复制!",2000);
+		});
+
 		})
 	</script>
 </head>
 <body>
 	<div id='raw'>
-		<textarea name="" id="t1" cols="60" rows="12" placeholder="   将谷歌浏览器完整请求头复制到这里，点开始转换就行了"></textarea>
+		<textarea name="" spellcheck="false" id="t1" cols="60" rows="12" placeholder="   将谷歌浏览器完整请求头复制到这里，点开始转换就行了"></textarea>
 	</div>
 	<div>
-		<input type="button" id="button" value="开始转换">
+		<button class="button" id="button" style="vertical-align:middle"><span>开始转换</span></button>
+		<button class="btn" data-clipboard-action="copy" data-clipboard-target="#t2">复制转换</button>
 	</div>
 	<div id='dict'>
-		<textarea name="" id="t2" cols="60" rows="12"></textarea>
+		<textarea name="" spellcheck="false" id="t2" cols="60" rows="12"></textarea>
 	</div>
 </body>
 </html>

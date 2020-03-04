@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>WHAT IP</title>
+	<link rel="icon" href="./favicon.ico" type="image/x-icon">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<script type="text/javascript">
+	var url = 'http://ten.sooko.club:9901/api/dns/ml.sooko.club';
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', url, true);
+	xhr.send();
+	xhr.onload = function (r) {
+		r = JSON.parse(xhr.responseText);
+		console.log(r);
+		// document.getElementById('main').src='http://'+r.ip+':18888/tree';
+		window.location.href = 'http://'+r.ip+':18888/tree'
+}
+</script>
+
+<!-- <style type="text/css">
+	#ip{
+		margin-top: 50px;
+	}
+	div{
+		margin-left: 10px;
+	} -->
+<!-- </style> -->
+<!-- <body> -->
+	<frameset framespacing="0" border="0" rows="0" frameborder="0"> 
+	<frame id="main" src="" scrolling="auto" noresize> 
+	</frameset> 
+<!-- </body> -->
+<!-- <script type="text/javascript">
+		function jQ (r) {
+			// alert(r.data[0].location)
+			$('#ip_addr').html('Address:&nbsp'+r.data[0].location);};
+</script> -->
+
+
+</html>
